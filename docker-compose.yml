@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  owncloud:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - owncloud_data:/var/www/html/data
+      - owncloud_config:/var/www/html/config
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=owncloud
+      - MYSQL_USER=owncloud
+      - MYSQL_PASSWORD=owncloud_password
+      - OWNCLOUD_TRUSTED_DOMAINS=localhost
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=owncloud
+      - MYSQL_USER=owncloud
+      - MYSQL_PASSWORD=owncloud_password
+    command: --innodb-buffer-pool-size=256M --innodb-log-file-size=64M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  owncloud_data:
+  owncloud_config:
+  mysql_data: 
