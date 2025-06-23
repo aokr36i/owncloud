@@ -27,7 +27,10 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
     a2enmod rewrite
 
 WORKDIR /var/www/html
-RUN curl -L https://attic.owncloud.com/server/stable/owncloud-7.0.15.tar.bz2 | tar xj --strip-components=1 -C /var/www/html
+RUN curl -L https://codeload.github.com/owncloud/core/zip/refs/tags/v7.0.2RC1 -o owncloud.zip && \
+    unzip owncloud.zip && \
+    mv core-7.0.2RC1/* /var/www/html/ && \
+    rm -rf core-7.0.2RC1 owncloud.zip
 
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
@@ -37,6 +40,11 @@ RUN chown -R www-data:www-data /var/www/html && \
     sed -i 's/memory_limit = .*/memory_limit = 512M/' "$PHP_INI_DIR/php.ini"
 
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+COPY 3rdparty.zip /var/www/html/3rdparty.zip
+RUN unzip /var/www/html/3rdparty.zip -d /var/www/html/ && \
+    rm /var/www/html/3rdparty.zip && \
+    chown -R www-data:www-data /var/www/html/3rdparty && \
+    chmod -R 755 /var/www/html/3rdparty
 
 EXPOSE 80
 CMD ["apache2-foreground"]
