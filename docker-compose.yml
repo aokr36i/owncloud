@@ -3,8 +3,8 @@ version: '3.7'
 services:
   owncloud:
     build: .
-    image: owncloud:7.0.2RC1
-    container_name: owncloud702rc1
+    image: owncloud:7.0.2
+    container_name: owncloud702
     ports:
       - "8080:80"
     volumes:

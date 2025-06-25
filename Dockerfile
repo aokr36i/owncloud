@@ -27,10 +27,10 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
     a2enmod rewrite
 
 WORKDIR /var/www/html
-RUN curl -L https://codeload.github.com/owncloud/core/zip/refs/tags/v7.0.2RC1 -o owncloud.zip && \
+RUN curl -L https://codeload.github.com/owncloud/core/zip/refs/tags/v7.0.2 -o owncloud.zip && \
     unzip owncloud.zip && \
-    mv core-7.0.2RC1/* /var/www/html/ && \
-    rm -rf core-7.0.2RC1 owncloud.zip
+    mv core-7.0.2/* /var/www/html/ && \
+    rm -rf core-7.0.2 owncloud.zip
 
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html && \
